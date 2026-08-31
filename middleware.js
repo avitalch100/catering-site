@@ -9,7 +9,8 @@ export function middleware(req) {
   if (!isAdminPath) return NextResponse.next();
 
   const cookie = req.cookies.get("cc_admin_auth")?.value;
-  if (!cookie || cookie !== process.env.ADMIN_PASSWORD) {
+  const expected = process.env.ADMIN_PASSWORD ? process.env.ADMIN_PASSWORD.trim() : "";
+  if (!cookie || !expected || cookie !== expected) {
     const loginUrl = new URL("/admin/login", req.url);
     return NextResponse.redirect(loginUrl);
   }
